@@ -14,6 +14,7 @@
 		3AB5BE502AE2D86F0017D6BF /* BackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AB5BE4F2AE2D86F0017D6BF /* BackgroundView.m */; };
 		3AB5BE532AE2D8E10017D6BF /* BackgroundViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AB5BE522AE2D8E10017D6BF /* BackgroundViewManager.m */; };
 		3AD966472AE3F6A3003C5B78 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD966462AE3F6A3003C5B78 /* AppDelegate.swift */; };
+		3AE174CB2AFACD1800583EDB /* FullContentWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE174CA2AFACD1800583EDB /* FullContentWindowController.swift */; };
 		514201522437B4B40078DB4F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 514201512437B4B40078DB4F /* Assets.xcassets */; };
 		514201552437B4B40078DB4F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 514201532437B4B40078DB4F /* Main.storyboard */; };
 /* End PBXBuildFile section */
@@ -29,6 +30,7 @@
 		3AB5BE522AE2D8E10017D6BF /* BackgroundViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BackgroundViewManager.m; sourceTree = "<group>"; };
 		3AD966452AE3F686003C5B78 /* JiraTimeTracker-macOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JiraTimeTracker-macOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		3AD966462AE3F6A3003C5B78 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		3AE174CA2AFACD1800583EDB /* FullContentWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullContentWindowController.swift; sourceTree = "<group>"; };
 		514201492437B4B30078DB4F /* JiraTimeTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JiraTimeTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		514201512437B4B40078DB4F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		514201542437B4B40078DB4F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 				3AB5BE522AE2D8E10017D6BF /* BackgroundViewManager.m */,
 				3AD966452AE3F686003C5B78 /* JiraTimeTracker-macOS-Bridging-Header.h */,
 				3A434F2C2AF9A4CD00CABFAF /* CustomToolbar.swift */,
+				3AE174CA2AFACD1800583EDB /* FullContentWindowController.swift */,
 				3AD966462AE3F6A3003C5B78 /* AppDelegate.swift */,
 				3A31355A2AF708CB00182B14 /* FullContentWindow.swift */,
 			);
@@ -272,6 +275,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AE174CB2AFACD1800583EDB /* FullContentWindowController.swift in Sources */,
 				3A31355B2AF708CB00182B14 /* FullContentWindow.swift in Sources */,
 				3AD966472AE3F6A3003C5B78 /* AppDelegate.swift in Sources */,
 				3A434F2D2AF9A4CD00CABFAF /* CustomToolbar.swift in Sources */,

@@ -1,100 +1,76 @@
 public class FullContentWindow: NSWindow {
-  var buttonsShouldBeMoved: Bool = true;
   
-  override public func standardWindowButton(_ b: NSWindow.ButtonType) -> NSButton? {
-    switch b {
-    case .closeButton:
-      moveButton(ofType: b)
-      if buttonsShouldBeMoved == true {
-        // moveButton(ofType: b)
-      }
-    default:
-      break
+  private var buttons: [NSButton] = []
+  
+  public let titleBarAccessoryViewController = NSTitlebarAccessoryViewController()
+  private lazy var titleBarHeight = calculatedTitleBarHeight
+  private let titleBarLeadingOffset: CGFloat?
+  private var originalLeadingOffsets: [CGFloat] = []
+  
+  public init(contentRect: NSRect, titleBarHeight: CGFloat, titleBarLeadingOffset: CGFloat? = nil) {
+    self.titleBarLeadingOffset = titleBarLeadingOffset
+    let styleMask: NSWindow.StyleMask = [.closable, .titled, .miniaturizable, .resizable, .fullSizeContentView]
+    super.init(contentRect: contentRect, styleMask: styleMask, backing: .buffered, defer: true)
+    titleVisibility = .hidden
+    titlebarAppearsTransparent = true
+    buttons = [NSWindow.ButtonType.closeButton, .miniaturizeButton, .zoomButton].compactMap {
+      standardWindowButton($0)
     }
-    
-    return super.standardWindowButton(b)
+    var accessoryViewHeight = titleBarHeight - calculatedTitleBarHeight
+    accessoryViewHeight = max(0, accessoryViewHeight)
+    titleBarAccessoryViewController.view.frame = CGRect(origin: CGPoint(x: titleBarAccessoryViewController.view.frame.origin.x,y:titleBarAccessoryViewController.view.frame.origin.y), size: CGSize(width: titleBarAccessoryViewController.view.frame.width, height: accessoryViewHeight)) // Width not used.
+    if accessoryViewHeight > 0 {
+      addTitlebarAccessoryViewController(titleBarAccessoryViewController)
+    }
+    self.titleBarHeight = max(titleBarHeight, calculatedTitleBarHeight)
   }
   
   public override func layoutIfNeeded() {
     super.layoutIfNeeded()
-    moveButton(ofType: .closeButton)
-    if buttonsShouldBeMoved == true {
-      // moveButton(ofType: .closeButton)
+    if originalLeadingOffsets.isEmpty {
+      let firstButtonOffset = buttons.first?.frame.origin.x ?? 0
+      originalLeadingOffsets = buttons.map { $0.frame.origin.x - firstButtonOffset }
+    }
+    if titleBarAccessoryViewController.view.frame.height > 0, !titleBarAccessoryViewController.isHidden {
+      setupButtons()
     }
   }
   
-  public func windowWillEnterFullScreen(_ notification: Notification) {
-    buttonsShouldBeMoved = false
-  }
+}
+
+extension FullContentWindow {
   
-  public func windowWillExitFullScreen(_ notification: Notification) {
-    buttonsShouldBeMoved = true
-  }
-  
-  
-  func moveButton(ofType type: NSWindow.ButtonType) {
-    
-    guard let button = super.standardWindowButton(type) else {
-      return
-    }
-    
-    switch type {
-    case .closeButton:
-      let windowControls = button.superview!
-      let titlebarContainer = windowControls.superview!
-      let realTitlebar = titlebarContainer.superview!
-      print(realTitlebar)
-      print(super.frame.width)
-      //.trackingAreas.forEach { area in
-      //  print(area.rect.width, area.rect.height)
-      //}
-      // print(realTitlebar.trackingAreas)
-      // windowControls.removeFromSuperview()
-      // windowControls.setFrameOrigin(NSMakePoint(10, -30))
-      // windowControls.layer?.backgroundColor = CGColor(red: 255, green: 0, blue: 0, alpha: 1)
-      // titlebarContainer.layer?.backgroundColor = CGColor(red: 0, green: 255, blue: 0, alpha: 1)
-      
-      // realTitlebar.subviews[0].layer?.backgroundColor = CGColor(red: 0, green: 0, blue: 255, alpha: 1)
-      // realTitlebar.subviews[1].layer?.backgroundColor = CGColor(red: 0, green: 0, blue: 0, alpha: 0.5)
-      // realTitlebar.subviews[2].layer?.backgroundColor = CGColor(red: 255, green: 255, blue: 255, alpha: 0.5)
-      
-      titlebarContainer.setFrameSize(NSSize(width: super.frame.size.width, height: 52))
-      titlebarContainer.setFrameOrigin(NSPoint(x: 0, y: super.frame.size.height - 52))
-      
-      windowControls.setFrameOrigin(NSPoint(x: 12, y: -16))
-      windowControls.setFrameSize(NSSize(width: super.frame.size.width - 12, height: 52))
-      
-      if (realTitlebar.trackingAreas.count >= 5) {
-        let trackingArea = realTitlebar.trackingAreas[4]
-        print(trackingArea)
-        // realTitlebar.removeTrackingArea(trackingArea)
-        let newTrackingAreaRect = NSRect(x: trackingArea.rect.origin.x, y: trackingArea.rect.origin.x + 30, width: trackingArea.rect.width, height: 20)
-        let newTrackingArea = NSTrackingArea(rect:newTrackingAreaRect , options: trackingArea.options, owner: trackingArea.owner, userInfo: trackingArea.userInfo )
-        realTitlebar.updateTrackingAreas()
-        realTitlebar.updateLayer()
-        realTitlebar.updateConstraints()
-        // realTitlebar.addTrackingArea(newTrackingArea)
+  public var standardWindowButtonsRect: CGRect {
+    var result = CGRect()
+    if let firstButton = buttons.first, let lastButton = buttons.last {
+      let leadingOffset = firstButton.frame.origin.x
+      let maxX = lastButton.frame.maxX
+      result = CGRect(x: leadingOffset, y: 0, width: maxX - leadingOffset, height: titleBarHeight)
+      if let titleBarLeadingOffset = titleBarLeadingOffset {
+        result = result.offsetBy(dx: titleBarLeadingOffset - leadingOffset, dy: 0)
       }
-      
-      print("windowControls", windowControls.trackingAreas.count)
-      print("titlebar", titlebarContainer.trackingAreas.count)
-      print("--------")
-      
-      // windowControls.setFrameSize(NSSize(width: 100, height: 52))
-      // superSuperView!.setFrameSize(NSSize(width: (superSuperView?.layer?.frame.width)!, height: 52))
-      // superSuperSuperView!.setFrameSize(NSSize(width: 200, height: 100))
-      // superSuperView!.setFrameOrigin(NSMakePoint(10, super.frame.size.height - 40))
-      // superSuperView!.addSubview(windowControls)
-      
-      // button.superview?.updateTrackingAreas()
-      // let trackingArea = (button.superview?.trackingAreas[0])!;
-      // button.superview?.removeTrackingArea(trackingArea)
-      // let newTrackingAreaRect = NSRect(x: trackingArea.rect.origin.x+50, y: trackingArea.rect.origin.x+50, width: trackingArea.rect.width+200, height: trackingArea.rect.height)
-      // let newTrackingArea = NSTrackingArea(rect:newTrackingAreaRect , options: trackingArea.options, owner: trackingArea.owner, userInfo: trackingArea.userInfo )
-      // button.superview?.addTrackingArea(newTrackingArea)
-      
-    default:
-      break
     }
+    return result
+  }
+  
+}
+
+extension FullContentWindow {
+  
+  private func setupButtons() {
+    let barHeight = calculatedTitleBarHeight
+    for (idx, button) in buttons.enumerated() {
+      let coordY = (barHeight - button.frame.size.height) * 0.5
+      var coordX = button.frame.origin.x
+      if let titleBarLeadingOffset = titleBarLeadingOffset {
+        coordX = titleBarLeadingOffset + originalLeadingOffsets[idx]
+      }
+      button.setFrameOrigin(CGPoint(x: coordX, y: coordY))
+    }
+  }
+  
+  private var calculatedTitleBarHeight: CGFloat {
+    let result = contentRect(forFrameRect: frame).height - contentLayoutRect.height
+    return result
   }
 }
